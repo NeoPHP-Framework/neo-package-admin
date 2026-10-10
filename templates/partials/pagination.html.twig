@@ -1,0 +1,22 @@
+<div class="na-pagination">
+    <p class="na-pagination-info">{{ '{first}–{last} of {total}'|trans({first: paginator.first, last: paginator.last, total: paginator.total}, 'admin') }}</p>
+    {% if paginator.pages > 1 %}
+        <nav class="na-pagination-links" aria-label="{{ 'Pagination'|trans({}, 'admin') }}">
+            {% if paginator.hasPrevious %}
+                <a href="{{ path(route, parameters|merge({page: paginator.page - 1})) }}" class="na-page-link" rel="prev">{{ 'Previous'|trans({}, 'admin') }}</a>
+            {% endif %}
+            {% for page in paginator.range %}
+                {% if page is null %}
+                    <span class="na-pagination-gap">…</span>
+                {% elseif page == paginator.page %}
+                    <span class="na-page-link is-active" aria-current="page">{{ page }}</span>
+                {% else %}
+                    <a href="{{ path(route, parameters|merge({page: page})) }}" class="na-page-link">{{ page }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if paginator.hasNext %}
+                <a href="{{ path(route, parameters|merge({page: paginator.page + 1})) }}" class="na-page-link" rel="next">{{ 'Next'|trans({}, 'admin') }}</a>
+            {% endif %}
+        </nav>
+    {% endif %}
+</div>

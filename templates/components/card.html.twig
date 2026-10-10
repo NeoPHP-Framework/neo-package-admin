@@ -1,0 +1,12 @@
+<section class="na-card">
+    <header class="na-card-header">
+        {% if icon %}<span class="na-card-icon">{{ admin_icon(icon, 'na-icon-sm') }}</span>{% endif %}
+        <h3 class="na-card-title">{{ title }}</h3>
+        {% for action in actions %}
+            {% include '@admin/components/action.html.twig' with {action: action, compact: true} only %}
+        {% endfor %}
+    </header>
+    <div class="na-card-body">
+        {% include '@admin/components/blocks.html.twig' with {blocks: blocks} only %}
+    </div>
+</section>

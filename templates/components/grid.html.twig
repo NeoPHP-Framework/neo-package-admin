@@ -1,0 +1,7 @@
+<div class="na-grid na-grid-{{ columns }}">
+    {% for block in blocks %}
+        <div class="na-span-{{ block.span }}">
+            {% include block.template with block.context only %}
+        </div>
+    {% endfor %}
+</div>

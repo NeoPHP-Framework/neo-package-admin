@@ -1,0 +1,37 @@
+{% set content %}
+    <div class="na-list">
+        {% for link in links %}
+            {% if link.url %}
+                <a href="{{ link.url }}" class="na-list-item"{% if link.target %} target="{{ link.target }}"{% if link.target == '_blank' %} rel="noopener noreferrer"{% endif %}{% endif %}>
+                    {% if link.icon %}{{ admin_icon(link.icon, 'na-icon-sm na-subtle') }}{% endif %}
+                    <span class="na-list-label">{{ link.label }}</span>
+                    {% if link.meta is not null %}<span class="na-list-meta">{{ link.meta }}</span>{% endif %}
+                    {{ admin_icon('chevron-right', 'na-icon-sm na-subtle') }}
+                </a>
+            {% else %}
+                <div class="na-list-item">
+                    {% if link.icon %}{{ admin_icon(link.icon, 'na-icon-sm na-subtle') }}{% endif %}
+                    <span class="na-list-label">{{ link.label }}</span>
+                    {% if link.meta is not null %}<span class="na-list-meta">{{ link.meta }}</span>{% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            {% include '@admin/components/empty.html.twig' with {title: empty, text: null, icon: null, framed: false} only %}
+        {% endfor %}
+    </div>
+{% endset %}
+{% if framed %}
+    <section class="na-card">
+        <header class="na-card-header">
+            {% if icon %}<span class="na-card-icon">{{ admin_icon(icon, 'na-icon-sm') }}</span>{% endif %}
+            <h3 class="na-card-title">{{ title }}</h3>
+            {% if more %}<a href="{{ more }}" class="na-link text-sm">{{ more_label|trans({}, 'admin') }}</a>{% endif %}
+        </header>
+        {{ content }}
+    </section>
+{% else %}
+    <div>
+        <h4 class="na-section-title">{{ title }}</h4>
+        {{ content }}
+    </div>
+{% endif %}

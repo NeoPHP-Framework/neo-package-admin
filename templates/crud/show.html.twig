@@ -1,0 +1,40 @@
+{% extends '@admin/layout.html.twig' %}
+
+{% set label = admin_label(object) %}
+
+{% block title %}{{ label }} · {{ entity.label|trans({}, 'admin') }} · {{ parent() }}{% endblock %}
+
+{% block page_title %}{{ entity.label|trans({}, 'admin') }}{% endblock %}
+
+{% block content %}
+    <div class="na-page-header">
+        <div class="na-page-heading">
+            <h2 class="na-page-title">{{ label }}</h2>
+        </div>
+        <div class="na-page-actions">
+            {% if actions.index %}
+                <a href="{{ path('admin_crud_index', {entity: entity.slug}) }}" class="na-btn">{{ 'Back to the list'|trans({}, 'admin') }}</a>
+            {% endif %}
+            {% if actions.edit %}
+                <a href="{{ path('admin_crud_edit', {entity: entity.slug, id: id}) }}" class="na-btn na-btn-primary">
+                    {{ admin_icon('edit', 'na-icon-sm') }}
+                    {{ 'Edit'|trans({}, 'admin') }}
+                </a>
+            {% endif %}
+            {% if actions.delete %}
+                {% include '@admin/partials/delete_form.html.twig' with {entity: entity, id: id, label: label} only %}
+            {% endif %}
+        </div>
+    </div>
+
+    <section class="na-card">
+        <dl class="na-dl">
+            {% for field in fields %}
+                <div>
+                    <dt>{{ field.label|trans({}, 'admin') }}</dt>
+                    <dd>{{ admin_value(object, field, 'show') }}</dd>
+                </div>
+            {% endfor %}
+        </dl>
+    </section>
+{% endblock %}

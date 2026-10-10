@@ -1,0 +1,55 @@
+{% set content %}
+    {% if is_empty %}
+        {% include '@admin/components/empty.html.twig' with {title: empty, text: null, icon: null, framed: false} only %}
+    {% else %}
+        <div class="na-chart{{ dense ? ' na-chart-dense' }}">
+            <div class="na-chart-y" aria-hidden="true">
+                {% for tick in ticks %}<span style="bottom: {{ tick.position }}%">{{ tick.label }}</span>{% endfor %}
+            </div>
+            <div class="na-chart-plot">
+                <div class="na-chart-grid" aria-hidden="true">
+                    <span style="bottom: 100%"></span>
+                    <span style="bottom: 75%"></span>
+                    <span style="bottom: 50%"></span>
+                    <span style="bottom: 25%"></span>
+                    <span class="na-chart-base" style="bottom: 0%"></span>
+                </div>
+                <div class="na-chart-bars" role="img" aria-label="{{ title }}">
+                    {% for bar in bars %}
+                        <div class="na-chart-col">
+                            <div class="na-chart-bar" style="height: {{ bar.height }}%">
+                                {% if bar.second > 0 %}<span class="na-chart-bar-2" style="height: {{ bar.second }}%"></span>{% endif %}
+                                <div class="na-chart-tip">
+                                    <strong>{{ bar.title }}</strong>
+                                    {% for value in bar.values %}
+                                        <span><i class="na-dot{{ value.second ? ' na-dot-2' }}"></i>{{ value.value }} {{ value.label|lower }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="na-chart-x" aria-hidden="true">
+                    {% for bar in bars %}<span>{{ bar.axis }}</span>{% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endset %}
+{% if framed %}
+    <section class="na-card">
+        <header class="na-card-header">
+            {% if icon %}<span class="na-card-icon">{{ admin_icon(icon, 'na-icon-sm') }}</span>{% endif %}
+            <h3 class="na-card-title">{{ title }}</h3>
+            {% for label in legend %}
+                <span class="na-legend"><span class="na-dot{{ loop.index0 ? ' na-dot-2' }}"></span>{{ label }}</span>
+            {% endfor %}
+        </header>
+        <div class="na-card-body">{{ content }}</div>
+    </section>
+{% else %}
+    <div>
+        <h4 class="na-section-title">{{ title }}</h4>
+        {{ content }}
+    </div>
+{% endif %}

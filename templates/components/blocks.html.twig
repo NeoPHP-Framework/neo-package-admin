@@ -1,0 +1,3 @@
+{% for block in blocks %}
+    {% include block.template with block.context only %}
+{% endfor %}

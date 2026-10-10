@@ -1,0 +1,12 @@
+{% extends '@admin/layout.html.twig' %}
+
+{% block title %}{{ page.title }} · {{ parent() }}{% endblock %}
+
+{% block page_title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+    {% include '@admin/partials/page_header.html.twig' with {heading: page.heading, description: page.description, actions: page.actions} only %}
+    <div class="na-stack">
+        {% include '@admin/components/blocks.html.twig' with {blocks: page.blocks} only %}
+    </div>
+{% endblock %}

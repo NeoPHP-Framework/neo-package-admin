@@ -1,0 +1,15 @@
+{% if heading or description or actions is not empty %}
+<div class="na-page-header">
+    <div class="na-page-heading">
+        {% if heading %}<h2 class="na-page-title">{{ heading }}</h2>{% endif %}
+        {% if description %}<p class="na-page-description">{{ description }}</p>{% endif %}
+    </div>
+    {% if actions is not empty %}
+    <div class="na-page-actions">
+        {% for action in actions %}
+        {% include '@admin/components/action.html.twig' with {action: action} only %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}

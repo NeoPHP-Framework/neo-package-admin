@@ -1,0 +1,31 @@
+<ul class="na-menu">
+    {% for item in items %}
+        {% set label = item.label|trans({}, 'admin') %}
+        {% if item.section %}
+            <li class="na-menu-section">{{ label }}</li>
+        {% elseif item.hasChildren %}
+            <li>
+                <details{% if item.open %} open{% endif %}>
+                    <summary class="na-menu-link">
+                        {% if item.icon %}{{ admin_icon(item.icon) }}{% endif %}
+                        <span class="na-menu-label">{{ label }}</span>
+                        {% if item.badge %}<span class="na-badge">{{ item.badge }}</span>{% endif %}
+                        {{ admin_icon('chevron-right', 'na-menu-chevron') }}
+                    </summary>
+                    <div class="na-submenu">
+                        {% include '@admin/partials/menu.html.twig' with {items: item.children} only %}
+                    </div>
+                </details>
+            </li>
+        {% else %}
+            <li>
+                <a href="{{ item.url }}" class="na-menu-link{{ item.active ? ' is-active' }}"{% if item.target %} target="{{ item.target }}"{% if item.target == '_blank' %} rel="noopener noreferrer"{% endif %}{% endif %}{% if item.active %} aria-current="page"{% endif %}>
+                    {% if item.icon %}{{ admin_icon(item.icon) }}{% endif %}
+                    <span class="na-menu-label">{{ label }}</span>
+                    {% if item.badge %}<span class="na-badge">{{ item.badge }}</span>{% endif %}
+                    {% if item.target == '_blank' %}{{ admin_icon('external', 'na-icon-xs na-subtle') }}{% endif %}
+                </a>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>

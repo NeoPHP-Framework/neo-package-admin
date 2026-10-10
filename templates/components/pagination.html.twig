@@ -1,0 +1,18 @@
+<div class="na-pagination">
+    <p class="na-pagination-info">{{ '{first}–{last} of {total}'|trans({first: pagination.first, last: pagination.last, total: pagination.total}, 'admin') }}</p>
+    {% if pagination.pages is not empty %}
+        <nav class="na-pagination-links" aria-label="{{ 'Pagination'|trans({}, 'admin') }}">
+            {% if pagination.previous %}<a href="{{ pagination.previous }}" class="na-page-link" rel="prev">{{ 'Previous'|trans({}, 'admin') }}</a>{% endif %}
+            {% for page in pagination.pages %}
+                {% if page.gap %}
+                    <span class="na-pagination-gap">…</span>
+                {% elseif page.active %}
+                    <span class="na-page-link is-active" aria-current="page">{{ page.label }}</span>
+                {% else %}
+                    <a href="{{ page.url }}" class="na-page-link">{{ page.label }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if pagination.next %}<a href="{{ pagination.next }}" class="na-page-link" rel="next">{{ 'Next'|trans({}, 'admin') }}</a>{% endif %}
+        </nav>
+    {% endif %}
+</div>

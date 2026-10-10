@@ -1,0 +1,38 @@
+Administration: Administration
+Dashboard: Dashboard
+Open the menu: Open the menu
+Close the menu: Close the menu
+Toggle the theme: Toggle the theme
+Log out: Log out
+Welcome to the administration.: Welcome to the administration.
+'You are logged in as {user}.': 'You are logged in as {user}.'
+No entity is administered yet.: No entity is administered yet.
+Add entities to the menu of config/packages/admin/admin.yaml.: Add entities to the menu of config/packages/admin/admin.yaml.
+Search: Search
+Add: Add
+Actions: Actions
+Show: Show
+Edit: Edit
+Delete: Delete
+Save: Save
+Create: Create
+Cancel: Cancel
+Back to the list: Back to the list
+Previous: Previous
+Next: Next
+Pagination: Pagination
+'Yes': 'Yes'
+'No': 'No'
+Nothing here yet.: Nothing here yet.
+'No result for "{search}".': 'No result for "{search}".'
+'{first}–{last} of {total}': '{first}–{last} of {total}'
+'New {entity}': 'New {entity}'
+'{entity} created.': '{entity} created.'
+'{entity} updated.': '{entity} updated.'
+'{entity} deleted.': '{entity} deleted.'
+'{entity} cannot be deleted: other records probably depend on it.': '{entity} cannot be deleted: other records probably depend on it.'
+'Delete {entity}? This cannot be undone.': 'Delete {entity}? This cannot be undone.'
+The security token is invalid, please try again.: The security token is invalid, please try again.
+'{count, plural, one {# item} other {# items}}': '{count, plural, one {# item} other {# items}}'
+'and {count} more': 'and {count} more'
+View all: View all

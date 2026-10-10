@@ -1,0 +1,34 @@
+{
+    "name": "neophp-package/neo-admin",
+    "description": "Modular administration area for NeoPHP",
+    "type": "neophp-package",
+    "license": "MIT",
+    "version": "1.0.0",
+    "keywords": [
+        "neophp",
+        "neophp-package",
+        "admin",
+        "crud",
+        "dashboard"
+    ],
+    "require": {
+        "php": ">=8.2",
+        "neophp/framework": "^2.1",
+        "twig/twig": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "NeoPHP\\NeoAdmin\\": "src/"
+        }
+    },
+    "extra": {
+        "neophp": {
+            "name": "admin",
+            "modules": [
+                "NeoPHP\\NeoAdmin\\NeoAdminManager"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

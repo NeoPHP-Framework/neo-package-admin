@@ -1,0 +1,41 @@
+{% extends '@admin/layout.html.twig' %}
+
+{% set heading = object ? admin_label(object) : 'New {entity}'|trans({entity: entity.label|trans({}, 'admin')}, 'admin') %}
+
+{% block title %}{{ heading }} · {{ entity.label|trans({}, 'admin') }} · {{ parent() }}{% endblock %}
+
+{% block page_title %}{{ entity.label|trans({}, 'admin') }}{% endblock %}
+
+{% block content %}
+    <div class="na-page-header">
+        <div class="na-page-heading">
+            <h2 class="na-page-title">{{ heading }}</h2>
+        </div>
+        <div class="na-page-actions">
+            {% if object and actions.show %}
+                <a href="{{ path('admin_crud_show', {entity: entity.slug, id: id}) }}" class="na-btn">
+                    {{ admin_icon('eye', 'na-icon-sm') }}
+                    {{ 'Show'|trans({}, 'admin') }}
+                </a>
+            {% endif %}
+            {% if object and actions.delete %}
+                {% include '@admin/partials/delete_form.html.twig' with {entity: entity, id: id, label: heading} only %}
+            {% endif %}
+        </div>
+    </div>
+
+    <section class="na-card na-form">
+        <div class="na-card-body">
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+            {{ form_rest(form) }}
+            <div class="na-form-actions">
+                <button type="submit" class="na-btn na-btn-primary">{{ (object ? 'Save' : 'Create')|trans({}, 'admin') }}</button>
+                {% if actions.index %}
+                    <a href="{{ path('admin_crud_index', {entity: entity.slug}) }}" class="na-btn na-btn-ghost">{{ 'Cancel'|trans({}, 'admin') }}</a>
+                {% endif %}
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </section>
+{% endblock %}

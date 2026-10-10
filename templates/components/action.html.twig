@@ -1,0 +1,16 @@
+{% set classes = compact|default(false) and action.icon ? 'na-icon-btn' ~ (action.variant == 'danger' ? ' na-icon-btn-danger' : '') : 'na-btn' ~ (action.variant != 'secondary' ? ' na-btn-' ~ action.variant : '') %}
+{% if action.method == 'GET' %}
+    <a href="{{ action.url }}" class="{{ classes }}"{% if action.target %} target="{{ action.target }}"{% if action.target == '_blank' %} rel="noopener noreferrer"{% endif %}{% endif %}{% if compact|default(false) and action.icon %} title="{{ action.label }}" aria-label="{{ action.label }}"{% endif %}>
+        {% if action.icon %}{{ admin_icon(action.icon, 'na-icon-sm') }}{% endif %}
+        {% if not (compact|default(false) and action.icon) %}{{ action.label }}{% endif %}
+    </a>
+{% else %}
+    <form method="post" action="{{ action.url }}" class="na-inline-form"{% if action.confirm %} data-admin-confirm="{{ action.confirm }}"{% endif %}>
+        {% if action.token %}<input type="hidden" name="_token" value="{{ csrf_token(action.token) }}">{% endif %}
+        {% if action.method != 'POST' %}<input type="hidden" name="_method" value="{{ action.method }}">{% endif %}
+        <button type="submit" class="{{ classes }}"{% if compact|default(false) and action.icon %} title="{{ action.label }}" aria-label="{{ action.label }}"{% endif %}>
+            {% if action.icon %}{{ admin_icon(action.icon, 'na-icon-sm') }}{% endif %}
+            {% if not (compact|default(false) and action.icon) %}{{ action.label }}{% endif %}
+        </button>
+    </form>
+{% endif %}

@@ -1,0 +1,5 @@
+<div class="na-empty{{ framed ? ' na-empty-dashed' }}">
+    {% if icon %}<span class="na-empty-icon">{{ admin_icon(icon, 'na-icon-lg') }}</span>{% endif %}
+    <p class="na-empty-title">{{ title|trans({}, 'admin') }}</p>
+    {% if text %}<p class="na-empty-text">{{ text|trans({}, 'admin') }}</p>{% endif %}
+</div>

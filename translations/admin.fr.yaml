@@ -1,0 +1,38 @@
+Administration: Administration
+Dashboard: Tableau de bord
+Open the menu: Ouvrir le menu
+Close the menu: Fermer le menu
+Toggle the theme: Changer de thème
+Log out: Se déconnecter
+Welcome to the administration.: Bienvenue dans l'administration.
+'You are logged in as {user}.': 'Vous êtes connecté en tant que {user}.'
+No entity is administered yet.: Aucune entité n'est encore administrée.
+Add entities to the menu of config/packages/admin/admin.yaml.: Ajoutez des entités au menu de config/packages/admin/admin.yaml.
+Search: Rechercher
+Add: Ajouter
+Actions: Actions
+Show: Voir
+Edit: Modifier
+Delete: Supprimer
+Save: Enregistrer
+Create: Créer
+Cancel: Annuler
+Back to the list: Retour à la liste
+Previous: Précédent
+Next: Suivant
+Pagination: Pagination
+'Yes': 'Oui'
+'No': 'Non'
+Nothing here yet.: Rien pour le moment.
+'No result for "{search}".': 'Aucun résultat pour « {search} ».'
+'{first}–{last} of {total}': '{first}–{last} sur {total}'
+'New {entity}': 'Nouveau : {entity}'
+'{entity} created.': '« {entity} » a été créé.'
+'{entity} updated.': '« {entity} » a été modifié.'
+'{entity} deleted.': '« {entity} » a été supprimé.'
+'{entity} cannot be deleted: other records probably depend on it.': '« {entity} » ne peut pas être supprimé : d''autres enregistrements en dépendent probablement.'
+'Delete {entity}? This cannot be undone.': 'Supprimer « {entity} » ? Cette action est irréversible.'
+The security token is invalid, please try again.: Le jeton de sécurité est invalide, veuillez réessayer.
+'{count, plural, one {# item} other {# items}}': '{count, plural, one {# élément} other {# éléments}}'
+'and {count} more': 'et {count} de plus'
+View all: Voir tout

@@ -1,0 +1,13 @@
+<form method="post" action="{{ path('admin_crud_delete', {entity: entity.slug, id: id}) }}" class="na-inline-form" data-admin-confirm="{{ 'Delete {entity}? This cannot be undone.'|trans({entity: label}, 'admin') }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('admin_delete_' ~ entity.slug ~ '_' ~ id) }}">
+    {% if compact|default(false) %}
+        <button type="submit" class="na-icon-btn na-icon-btn-danger" title="{{ 'Delete'|trans({}, 'admin') }}" aria-label="{{ 'Delete'|trans({}, 'admin') }}">
+            {{ admin_icon('trash', 'na-icon-sm') }}
+        </button>
+    {% else %}
+        <button type="submit" class="na-btn na-btn-danger">
+            {{ admin_icon('trash', 'na-icon-sm') }}
+            {{ 'Delete'|trans({}, 'admin') }}
+        </button>
+    {% endif %}
+</form>

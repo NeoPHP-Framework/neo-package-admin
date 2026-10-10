@@ -1,0 +1,14 @@
+title: Administration
+role: ROLE_ADMIN
+per_page: 25
+entity_namespace: App\Entity
+
+menu:
+    - { type: dashboard }
+
+dashboard:
+    widgets: []
+
+assets:
+    stylesheets: []
+    javascripts: []

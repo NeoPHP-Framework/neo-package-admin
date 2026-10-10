@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="{{ locale() }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ admin.title|trans({}, 'admin') }}{% endblock %}</title>
+    <script>try{var t=localStorage.getItem('neo-admin-theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}</script>
+    <link rel="stylesheet" href="{{ asset('@admin/css/admin.css') }}">
+    {% for stylesheet in admin.stylesheets ?? [] %}
+        <link rel="stylesheet" href="{{ asset(stylesheet) }}">
+    {% endfor %}
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="na-body">
+<div class="na-shell">
+    <div data-admin-backdrop class="na-backdrop"></div>
+
+    <aside data-admin-sidebar class="na-sidebar">
+        <div class="na-sidebar-header">
+            <a href="{{ path('admin_dashboard') }}" class="na-brand">{{ admin.title|trans({}, 'admin') }}</a>
+            <button type="button" data-admin-close class="na-icon-btn na-mobile-only" aria-label="{{ 'Close the menu'|trans({}, 'admin') }}">
+                {{ admin_icon('x') }}
+            </button>
+        </div>
+
+        <nav class="na-sidebar-nav">
+            {% include '@admin/partials/menu.html.twig' with {items: admin.menu} only %}
+        </nav>
+    </aside>
+
+    <div class="na-main">
+        <header class="na-topbar">
+            <button type="button" data-admin-open class="na-icon-btn na-mobile-only" aria-label="{{ 'Open the menu'|trans({}, 'admin') }}">
+                {{ admin_icon('menu') }}
+            </button>
+
+            <h1 class="na-topbar-title">{% block page_title %}{% endblock %}</h1>
+
+            <button type="button" data-admin-theme class="na-icon-btn" aria-label="{{ 'Toggle the theme'|trans({}, 'admin') }}">
+                {{ admin_icon('moon', 'na-icon na-theme-light') }}
+                {{ admin_icon('sun', 'na-icon na-theme-dark') }}
+            </button>
+
+            {% set user = app_user() %}
+            {% if user %}
+                <span class="na-user">
+                        {{ admin_icon('user', 'na-icon-sm') }}
+                    {{ user.userIdentifier }}
+                    </span>
+                {{ logout_form('Log out'|trans({}, 'admin'), 'na-btn na-btn-sm') }}
+            {% endif %}
+        </header>
+
+        <main class="na-content">
+            {% set messages = flashes() %}
+            {% if messages is not empty %}
+                <div class="na-flashes">
+                    {% for type, list in messages %}
+                        {% for message in list %}
+                            <div role="alert" class="na-alert na-alert-{{ type }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</div>
+
+<script src="{{ asset('@admin/js/admin.js') }}" defer></script>
+{% for javascript in admin.javascripts ?? [] %}
+    <script src="{{ asset(javascript) }}" defer></script>
+{% endfor %}
+{% block javascripts %}{% endblock %}
+</body>
+</html>

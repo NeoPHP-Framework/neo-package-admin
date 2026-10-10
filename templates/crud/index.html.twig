@@ -1,0 +1,88 @@
+{% extends '@admin/layout.html.twig' %}
+
+{% block title %}{{ entity.label|trans({}, 'admin') }} · {{ parent() }}{% endblock %}
+
+{% block page_title %}{{ entity.label|trans({}, 'admin') }}{% endblock %}
+
+{% block content %}
+    {% set parameters = {entity: entity.slug}|merge(search ? {q: search} : {})|merge(paginator.sort ? {sort: paginator.sort, direction: paginator.direction} : {}) %}
+
+    <div class="na-toolbar">
+        {% if searchable %}
+            <form method="get" action="{{ path('admin_crud_index', {entity: entity.slug}) }}" class="na-search" role="search">
+                <span class="na-search-icon">{{ admin_icon('search', 'na-icon-sm') }}</span>
+                <input type="search" name="q" value="{{ search }}" placeholder="{{ 'Search'|trans({}, 'admin') }}" aria-label="{{ 'Search'|trans({}, 'admin') }}" class="na-input">
+            </form>
+        {% else %}
+            <div></div>
+        {% endif %}
+
+        {% if actions.new %}
+            <a href="{{ path('admin_crud_new', {entity: entity.slug}) }}" class="na-btn na-btn-primary">
+                {{ admin_icon('plus', 'na-icon-sm') }}
+                {{ 'Add'|trans({}, 'admin') }}
+            </a>
+        {% endif %}
+    </div>
+
+    <section class="na-card">
+        {% if paginator.items is empty %}
+            {% include '@admin/components/empty.html.twig' with {title: search ? 'No result for "{search}".'|trans({search: search}, 'admin') : 'Nothing here yet.', text: null, icon: 'box', framed: false} only %}
+        {% else %}
+            <div class="na-table-wrap">
+                <table class="na-table">
+                    <thead>
+                    <tr>
+                        {% for field in fields %}
+                            <th scope="col">
+                                {% if field.sortable %}
+                                    {% set current = paginator.sort == field.name %}
+                                    {% set next = current and paginator.direction == 'asc' ? 'desc' : 'asc' %}
+                                    <a href="{{ path('admin_crud_index', {entity: entity.slug, sort: field.name, direction: next}|merge(search ? {q: search} : {})) }}" class="na-sort">
+                                        {{ field.label|trans({}, 'admin') }}
+                                        {% if current %}{{ admin_icon(paginator.direction == 'asc' ? 'chevron-up' : 'chevron-down', 'na-icon-xs') }}{% endif %}
+                                    </a>
+                                {% else %}
+                                    {{ field.label|trans({}, 'admin') }}
+                                {% endif %}
+                            </th>
+                        {% endfor %}
+                        <th scope="col" class="na-actions"><span class="sr-only">{{ 'Actions'|trans({}, 'admin') }}</span></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in paginator.items %}
+                        {% set id = admin_id(item) %}
+                        <tr>
+                            {% for field in fields %}
+                                <td>
+                                    {% if loop.first and (actions.show or actions.edit) %}
+                                        <a href="{{ path(actions.show ? 'admin_crud_show' : 'admin_crud_edit', {entity: entity.slug, id: id}) }}" class="na-link">{{ admin_value(item, field, 'index') }}</a>
+                                    {% else %}
+                                        {{ admin_value(item, field, 'index') }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                            <td class="na-actions">
+                                <div class="na-row-actions">
+                                    {% if actions.show %}
+                                        <a href="{{ path('admin_crud_show', {entity: entity.slug, id: id}) }}" class="na-icon-btn" title="{{ 'Show'|trans({}, 'admin') }}" aria-label="{{ 'Show'|trans({}, 'admin') }}">{{ admin_icon('eye', 'na-icon-sm') }}</a>
+                                    {% endif %}
+                                    {% if actions.edit %}
+                                        <a href="{{ path('admin_crud_edit', {entity: entity.slug, id: id}) }}" class="na-icon-btn" title="{{ 'Edit'|trans({}, 'admin') }}" aria-label="{{ 'Edit'|trans({}, 'admin') }}">{{ admin_icon('edit', 'na-icon-sm') }}</a>
+                                    {% endif %}
+                                    {% if actions.delete %}
+                                        {% include '@admin/partials/delete_form.html.twig' with {entity: entity, id: id, label: admin_label(item), compact: true} only %}
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </section>
+
+    {% include '@admin/partials/pagination.html.twig' with {paginator: paginator, route: 'admin_crud_index', parameters: parameters} only %}
+{% endblock %}

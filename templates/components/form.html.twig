@@ -1,0 +1,20 @@
+{% set content %}
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{ form_rest(form) }}
+    <div class="na-form-actions">
+        <button type="submit" class="na-btn na-btn-primary">{{ submit|trans({}, 'admin') }}</button>
+        {% if cancel %}<a href="{{ cancel }}" class="na-btn na-btn-ghost">{{ 'Cancel'|trans({}, 'admin') }}</a>{% endif %}
+    </div>
+    {{ form_end(form) }}
+{% endset %}
+{% if framed %}
+    <section class="na-card na-form">
+        {% if title %}
+            <header class="na-card-header"><h3 class="na-card-title">{{ title }}</h3></header>
+        {% endif %}
+        <div class="na-card-body">{{ content }}</div>
+    </section>
+{% else %}
+    <div class="na-form">{{ content }}</div>
+{% endif %}

@@ -1,0 +1,72 @@
+{% set content %}
+    {% if rows is empty %}
+        {% include '@admin/components/empty.html.twig' with {title: empty, text: null, icon: framed ? 'box' : null, framed: false} only %}
+    {% else %}
+        <div class="na-table-wrap">
+            <table class="na-table">
+                <thead>
+                <tr>
+                    {% for column in columns %}
+                        <th scope="col"{% if column.numeric %} class="na-num"{% endif %}>{{ column.label }}</th>
+                    {% endfor %}
+                    {% if has_actions %}<th scope="col" class="na-actions"><span class="sr-only">{{ 'Actions'|trans({}, 'admin') }}</span></th>{% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for row in rows %}
+                    <tr>
+                        {% for cell in row.cells %}
+                            {% set column = columns[loop.index0] %}
+                            <td class="{{ column.numeric ? 'na-num' : 'na-truncate' }}"{% if cell.title %} title="{{ cell.title }}"{% endif %}>
+                                {% set text = cell.translate ? cell.text|trans({}, 'admin') : cell.text %}
+                                {% if cell.empty %}
+                                    <span class="na-subtle">—</span>
+                                {% elseif cell.badge %}
+                                    <span class="na-badge na-badge-{{ cell.badge }}">{{ text }}</span>
+                                {% elseif cell.url %}
+                                    <a href="{{ cell.url }}" class="na-link{{ cell.code ? ' na-code' }}"{% if cell.target %} target="{{ cell.target }}" rel="noopener noreferrer"{% endif %}>{{ text }}</a>
+                                {% elseif cell.code %}
+                                    <code class="na-code">{{ text }}</code>
+                                {% else %}
+                                    {{ text }}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                        {% if has_actions %}
+                            <td class="na-actions">
+                                <div class="na-row-actions">
+                                    {% for action in row.actions %}
+                                        {% include '@admin/components/action.html.twig' with {action: action, compact: true} only %}
+                                    {% endfor %}
+                                </div>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endset %}
+{% if framed %}
+    <section class="na-card">
+        {% if title %}
+            <header class="na-card-header">
+                {% if icon %}<span class="na-card-icon">{{ admin_icon(icon, 'na-icon-sm') }}</span>{% endif %}
+                <h3 class="na-card-title">{{ title }}</h3>
+                {% for action in actions %}
+                    {% include '@admin/components/action.html.twig' with {action: action} only %}
+                {% endfor %}
+            </header>
+        {% endif %}
+        {{ content }}
+    </section>
+{% else %}
+    <div>
+        {% if title %}<h4 class="na-section-title">{{ title }}</h4>{% endif %}
+        {{ content }}
+    </div>
+{% endif %}
+{% if pagination %}
+    {% include '@admin/components/pagination.html.twig' with {pagination: pagination} only %}
+{% endif %}

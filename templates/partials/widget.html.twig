@@ -1,0 +1,40 @@
+{% set label = widget.label|trans({}, 'admin') %}
+<section class="flex flex-col rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 {{ widget.size == 'large' ? 'sm:col-span-2' : '' }}">
+    {% if widget.type == 'count' %}
+        <div class="flex flex-1 items-center gap-4 p-5">
+            <span class="rounded-md bg-indigo-50 p-2.5 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">{{ admin_icon(widget.icon) }}</span>
+            <div class="min-w-0">
+                <p class="truncate text-sm text-gray-500 dark:text-gray-400">{{ label }}</p>
+                <p class="text-2xl font-semibold tracking-tight">{{ widget.value }}</p>
+            </div>
+        </div>
+        {% if widget.url %}
+            <a href="{{ widget.url }}" class="border-t border-gray-100 px-5 py-2.5 text-sm font-medium text-indigo-600 hover:bg-gray-50 dark:border-gray-800 dark:text-indigo-400 dark:hover:bg-gray-800/50">{{ 'View all'|trans({}, 'admin') }}</a>
+        {% endif %}
+    {% else %}
+        <header class="flex items-center gap-2 border-b border-gray-100 px-5 py-3 dark:border-gray-800">
+            <span class="text-gray-400">{{ admin_icon(widget.icon, 'size-4') }}</span>
+            <h3 class="flex-1 truncate text-sm font-semibold">{{ label }}</h3>
+            {% if widget.type == 'latest' and widget.url %}
+                <a href="{{ widget.url }}" class="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400">{{ 'View all'|trans({}, 'admin') }}</a>
+            {% endif %}
+        </header>
+        <ul class="flex-1 divide-y divide-gray-100 dark:divide-gray-800">
+            {% for item in widget.type == 'latest' ? widget.items : widget.links %}
+                <li>
+                    {% if item.url %}
+                        <a href="{{ item.url }}"{% if item.target ?? false %} target="{{ item.target }}"{% if item.target == '_blank' %} rel="noopener noreferrer"{% endif %}{% endif %} class="flex items-center gap-3 px-5 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                            {% if item.icon ?? null %}{{ admin_icon(item.icon, 'size-4 text-gray-400') }}{% endif %}
+                            <span class="flex-1 truncate">{{ widget.type == 'links' ? item.label|trans({}, 'admin') : item.label }}</span>
+                            {{ admin_icon('chevron-right', 'size-4 text-gray-300 dark:text-gray-600') }}
+                        </a>
+                    {% else %}
+                        <span class="block truncate px-5 py-2.5 text-sm">{{ item.label }}</span>
+                    {% endif %}
+                </li>
+            {% else %}
+                <li class="px-5 py-6 text-center text-sm text-gray-500 dark:text-gray-400">{{ 'Nothing here yet.'|trans({}, 'admin') }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</section>

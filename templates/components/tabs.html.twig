@@ -1,0 +1,5 @@
+<nav class="na-tabs">
+    {% for tab in tabs %}
+        <a href="{{ tab.url }}" class="na-tab{{ tab.active ? ' is-active' }}"{% if tab.active %} aria-current="page"{% endif %}>{{ tab.label }}</a>
+    {% endfor %}
+</nav>
