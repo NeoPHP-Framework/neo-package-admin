@@ -3,7 +3,6 @@
     "description": "Modular administration area for NeoPHP",
     "type": "neophp-package",
     "license": "MIT",
-    "version": "1.0.0",
     "keywords": [
         "neophp",
         "neophp-package",
