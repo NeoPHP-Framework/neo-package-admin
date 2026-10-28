@@ -112,8 +112,16 @@ class MenuBuilder
 
     protected function badge(?string $badge): ?string
     {
-        if ($badge === null || $this->container === null || !str_contains($badge, '\\') || !class_exists($badge)) {
+        if ($badge === null || preg_match('/^\\\\?[A-Za-z_][A-Za-z0-9_]*(\\\\[A-Za-z_][A-Za-z0-9_]*)+$/', $badge) !== 1) {
             return $badge;
+        }
+
+        if (!class_exists($badge)) {
+            throw new NeoAdminException('The badge class "{class}" of the menu does not exist: check its namespace and its file (App\\Admin\\Badge\\MyBadge is src/Admin/Badge/MyBadge.php), or run composer dump-autoload.', 0, null, ['class' => $badge]);
+        }
+
+        if ($this->container === null) {
+            throw new NeoAdminException('The badge "{class}" needs the container: create the MenuBuilder with the ContainerManagerInterface.', 0, null, ['class' => $badge]);
         }
 
         $instance = $this->container->get($badge);
