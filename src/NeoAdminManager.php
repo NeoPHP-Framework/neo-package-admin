@@ -31,6 +31,8 @@ final class NeoAdminManager implements NeoAdminManagerInterface
         'assets' => ['stylesheets' => [], 'javascripts' => []],
     ];
 
+    public const BADGE_VARIANTS = ['primary', 'success', 'warning', 'danger', 'info'];
+
     public const MENU_TYPES = ['dashboard', 'entity', 'submenu', 'link', 'section'];
 
     public const MENU_ICONS = ['dashboard' => 'home', 'entity' => 'list', 'submenu' => 'folder', 'link' => 'link', 'section' => null];
@@ -212,6 +214,7 @@ final class NeoAdminManager implements NeoAdminManagerInterface
             'icon' => array_key_exists('icon', $item) ? ($item['icon'] === null ? null : (string) $item['icon']) : self::MENU_ICONS[$type],
             'role' => isset($item['role']) && $item['role'] !== '' ? (string) $item['role'] : null,
             'badge' => isset($item['badge']) && $item['badge'] !== '' ? (string) $item['badge'] : null,
+            'badge_variant' => isset($item['badge_variant']) && $item['badge_variant'] !== '' ? strtolower((string) $item['badge_variant']) : null,
             'entity' => null,
             'url' => null,
             'route' => null,
@@ -219,6 +222,10 @@ final class NeoAdminManager implements NeoAdminManagerInterface
             'target' => isset($item['target']) ? (string) $item['target'] : null,
             'children' => [],
         ];
+
+        if ($normalized['badge_variant'] !== null && !in_array($normalized['badge_variant'], self::BADGE_VARIANTS, true)) {
+            throw new NeoAdminException('The badge_variant "{variant}" of the menu item {path} is invalid: use {variants}.', 0, null, ['variant' => $normalized['badge_variant'], 'path' => $path, 'variants' => implode(', ', self::BADGE_VARIANTS)]);
+        }
 
         if ($type === 'entity') {
             if (!isset($item['entity']) || !is_string($item['entity']) || preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $item['entity']) !== 1) {

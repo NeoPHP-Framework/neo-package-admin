@@ -57,7 +57,39 @@ dashboard:
 | `link` | `label`, `url` or `route` + `parameters`, `target` |
 | `section` | `label` (required): a title between groups of items |
 
-Every item accepts `icon`, `role` and `badge`. An item whose role is not granted is hidden, as is an empty submenu or section.
+Every item accepts `icon`, `role`, `badge` and `badge_variant`. An item whose role is not granted is hidden, as is an empty submenu or section.
+
+### Menu badges
+
+`badge` is a short text (`New`, `Beta`) or a class of the project implementing `BadgeInterface`, whose value is computed on each page: a counter of records waiting for a moderation, for example. `badge_variant` colors it: `primary`, `success`, `warning`, `danger` or `info` (neutral without it).
+
+```php
+namespace App\Admin\Badge;
+
+use App\Entity\Report;
+use NeoPHP\NeoAdmin\Menu\Contract\BadgeInterface;
+use NeoPHP\Package\Orm\OrmManagerInterface;
+
+class PendingReportsBadge implements BadgeInterface
+{
+    public function __construct(protected OrmManagerInterface $orm)
+    {
+    }
+
+    public function getValue(): int|string|null
+    {
+        return $this->orm->getRepository(Report::class)->count(['status' => 'pending']);
+    }
+}
+```
+
+```yaml
+menu:
+    - { type: entity, entity: Report, icon: shield-alert, badge: App\Admin\Badge\PendingReportsBadge, badge_variant: danger }
+    - { type: link, label: Changelog, route: admin_changelog, badge: New, badge_variant: info }
+```
+
+The class is created by the container, so its constructor receives the services it needs. A value of `null`, `0` or `''` hides the badge, and a number above 99 is shown as `99+`. The value is computed only for the items the user can see, on every page of the administration: keep the query light (a `count()` on an indexed column) or cache it.
 
 Icons: `home`, `users`, `user`, `file`, `folder`, `tag`, `list`, `settings`, `link`, `external`, `chart`, `shield`, `mail`, `box`, `plus`, `edit`, `trash`, `eye`, `search`, `logout`, `menu`, `x`, `chevron-down`, `chevron-right`, `sun`, `moon`, `circle`.
 

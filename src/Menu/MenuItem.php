@@ -15,6 +15,7 @@ final class MenuItem
         public readonly ?string $badge = null,
         public readonly ?string $target = null,
         public readonly array $children = [],
+        public readonly ?string $badgeVariant = null,
     ) {
     }
 

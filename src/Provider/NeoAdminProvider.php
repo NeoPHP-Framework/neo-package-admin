@@ -43,6 +43,7 @@ class NeoAdminProvider extends AbstractProvider
             $container->get(NeoAdminManagerInterface::class),
             $container->get(RoutingManagerInterface::class),
             $container->get(SecurityManagerInterface::class),
+            $container,
         ));
 
         $container->singleton(FieldResolver::class, static fn (ContainerManagerInterface $container): FieldResolver => new FieldResolver(

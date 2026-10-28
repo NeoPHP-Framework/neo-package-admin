@@ -40,7 +40,7 @@ interface NeoAdminManagerInterface
     /**
      * Returns the items of the menu, validated and completed with their defaults.
      *
-     * @return list<array<string, mixed>> The items: type, label, icon, role, badge, entity, url, route, parameters, target and children
+     * @return list<array<string, mixed>> The items: type, label, icon, role, badge, badge_variant, entity, url, route, parameters, target and children
      * @throws NeoAdminException When an item is invalid
      */
     public function getMenu(): array;

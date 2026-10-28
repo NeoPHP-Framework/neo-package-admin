@@ -9,7 +9,7 @@
                     <summary class="na-menu-link">
                         {% if item.icon %}{{ admin_icon(item.icon) }}{% endif %}
                         <span class="na-menu-label">{{ label }}</span>
-                        {% if item.badge %}<span class="na-badge">{{ item.badge }}</span>{% endif %}
+                        {% if item.badge is not same as(null) %}<span class="na-badge{{ item.badgeVariant ? ' na-badge-' ~ item.badgeVariant }}">{{ item.badge }}</span>{% endif %}
                         {{ admin_icon('chevron-right', 'na-menu-chevron') }}
                     </summary>
                     <div class="na-submenu">
@@ -22,7 +22,7 @@
                 <a href="{{ item.url }}" class="na-menu-link{{ item.active ? ' is-active' }}"{% if item.target %} target="{{ item.target }}"{% if item.target == '_blank' %} rel="noopener noreferrer"{% endif %}{% endif %}{% if item.active %} aria-current="page"{% endif %}>
                     {% if item.icon %}{{ admin_icon(item.icon) }}{% endif %}
                     <span class="na-menu-label">{{ label }}</span>
-                    {% if item.badge %}<span class="na-badge">{{ item.badge }}</span>{% endif %}
+                    {% if item.badge is not same as(null) %}<span class="na-badge{{ item.badgeVariant ? ' na-badge-' ~ item.badgeVariant }}">{{ item.badge }}</span>{% endif %}
                     {% if item.target == '_blank' %}{{ admin_icon('external', 'na-icon-xs na-subtle') }}{% endif %}
                 </a>
             </li>
