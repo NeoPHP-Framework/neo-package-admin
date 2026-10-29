@@ -155,9 +155,49 @@ form:
 | `index.sort` | The default order |
 | `index.per_page` | The number of rows per page |
 
-Options of a field: `label`, `format` (dates), `truncate` (list), `sortable`, and for the forms `type` (`text`, `textarea`, `email`, `url`, `tel`, `password`, `integer`, `number`, `checkbox`, `choice`, `enum`, `entity`, `date`, `datetime`, `time`, `color`, `hidden` or a form type class), `help`, `required`, `disabled`, `attr`, `placeholder`, `choices`, `multiple`, `expanded` and `options` (any other option of the form type).
+Options of a field: `label`, `format` (dates), `truncate` (list), `sortable`, and for the forms `type` (`text`, `textarea`, `email`, `url`, `tel`, `password`, `integer`, `number`, `checkbox`, `choice`, `enum`, `entity`, `date`, `datetime`, `time`, `color`, `hidden` or a form type class), `help`, `required`, `disabled`, `attr`, `placeholder`, `choices`, `multiple`, `expanded` and `options` (`color`, `hidden`, `translations` or a form type class).
 
 A field which is not mapped by the ORM can be displayed when the entity has a property or a getter with its name.
+
+### Translations
+
+The `translations` type edits a OneToMany association holding the translations of the entity: the form shows a block per locale with a field per translated property, and the rows are created, updated and removed on save (an empty value removes its row).
+
+```yaml
+form:
+    fields:
+        slug: ~
+        translations:
+            type: translations
+            locales: { fr: Français, en: English }
+            fields:
+                name: { label: Name, required: true }
+                description: { label: Description, type: textarea }
+
+index:
+    fields:
+        translations: { type: translations, label: Name, field: name }
+
+show:
+    fields:
+        translations: { type: translations, locales: { fr: Français, en: English }, fields: [name, description] }
+```
+
+Two layouts of the translation entity are supported:
+
+- one row per locale and field, with `locale`, `field` and `value` properties (`CategoryTranslated { translatable, locale, field, value }`), used when the target has a `field` property;
+- one row per locale, with a property per translated field (`ProductTranslation { product, locale, title, summary }`).
+
+| Option | Description |
+|---|---|
+| `locales` | The locales, as a list (`[fr, en]`) or a mapping of codes and labels (the locales of the Translation module by default) |
+| `fields` | The translated fields, as a list or a mapping with `label`, `type`, `required`, `help`, `attr`, `placeholder`, `choices` and `options` (`name` by default, or the text properties of a one-row-per-locale target) |
+| `locale_property` | The property of the locale (`locale`) |
+| `field_property` | The property of the field name (`field` when the target has it, `null` for a row per locale) |
+| `value_property` | The property of the value (`value`) |
+| `field` | In the list, the field displayed in the current locale (the first field by default) |
+
+The association needs a `mappedBy`. The new rows are persisted by the administration, so no `cascade` is required; without `orphanRemoval: true`, the rows emptied in the form are removed explicitly.
 
 ## Routes
 

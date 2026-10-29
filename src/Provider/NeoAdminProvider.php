@@ -12,6 +12,7 @@ use NeoPHP\Component\Routing\RoutingManagerInterface;
 use NeoPHP\NeoAdmin\Crud\EntityFormFactory;
 use NeoPHP\NeoAdmin\Crud\EntityQuery;
 use NeoPHP\NeoAdmin\Crud\FieldResolver;
+use NeoPHP\NeoAdmin\Crud\TranslationMapper;
 use NeoPHP\NeoAdmin\Crud\ValueRenderer;
 use NeoPHP\NeoAdmin\Dashboard\WidgetBuilder;
 use NeoPHP\NeoAdmin\Menu\MenuBuilder;
@@ -55,15 +56,22 @@ class NeoAdminProvider extends AbstractProvider
             $container->get(FieldResolver::class),
         ));
 
+        $container->singleton(TranslationMapper::class, static fn (ContainerManagerInterface $container): TranslationMapper => new TranslationMapper(
+            $container->get(OrmManagerInterface::class),
+            $container->get(TranslationManagerInterface::class),
+        ));
+
         $container->singleton(ValueRenderer::class, static fn (ContainerManagerInterface $container): ValueRenderer => new ValueRenderer(
             $container->get(OrmManagerInterface::class),
             $container->get(TranslationManagerInterface::class),
+            $container->get(TranslationMapper::class),
         ));
 
         $container->singleton(EntityFormFactory::class, static fn (ContainerManagerInterface $container): EntityFormFactory => new EntityFormFactory(
             $container->get(FormManagerInterface::class),
             $container->get(OrmManagerInterface::class),
             $container->get(ValueRenderer::class),
+            $container->get(TranslationMapper::class),
         ));
 
         $container->singleton(WidgetBuilder::class, static fn (ContainerManagerInterface $container): WidgetBuilder => new WidgetBuilder(

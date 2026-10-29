@@ -27,9 +27,14 @@ class ValueRenderer
 
     protected PropertyAccessor $accessor;
 
-    public function __construct(protected OrmManagerInterface $orm, protected TranslationManagerInterface $translator)
+    public function __construct(protected OrmManagerInterface $orm, protected TranslationManagerInterface $translator, protected ?TranslationMapper $translations = null)
     {
         $this->accessor = new PropertyAccessor();
+    }
+
+    public function getTranslator(): TranslationManagerInterface
+    {
+        return $this->translator;
     }
 
     public function value(object $entity, FieldDefinition $field): mixed
@@ -50,6 +55,10 @@ class ValueRenderer
     public function render(object $entity, FieldDefinition $field, string $page = 'index'): string
     {
         $value = $this->value($entity, $field);
+
+        if ($field->getOption('type') === TranslationMapper::TYPE && is_iterable($value)) {
+            return $this->translations($value, $field, $page);
+        }
 
         if ($value === null || $value === '') {
             return '<span class="na-subtle">—</span>';
@@ -156,6 +165,47 @@ class ValueRenderer
         }
 
         return $html . '</ul>';
+    }
+
+    protected function translations(iterable $rows, FieldDefinition $field, string $page): string
+    {
+        $this->translations ??= new TranslationMapper($this->orm, $this->translator);
+        $config = $this->translations->resolve($field, $field->getName());
+        $values = $this->translations->values($rows, $config);
+
+        if ($page === 'index') {
+            $name = (string) $field->getOption('field', array_key_first($config['fields']));
+            $locale = isset($values[$this->translator->getLocale()][$name]) ? $this->translator->getLocale() : (string) array_key_first(array_filter($values, static fn (array $locale): bool => isset($locale[$name])));
+            $text = $values[$locale][$name] ?? null;
+
+            if ($text === null || $text === '') {
+                return '<span class="na-subtle">—</span>';
+            }
+
+            $truncate = $field->getOption('truncate', 80);
+
+            return $this->e($this->truncate(is_scalar($text) ? (string) $text : get_debug_type($text), $truncate !== null ? (int) $truncate : null));
+        }
+
+        $html = '';
+
+        foreach ($config['locales'] as $locale => $label) {
+            $items = '';
+
+            foreach ($config['fields'] as $name => $options) {
+                $text = $values[$locale][$name] ?? null;
+
+                if ($text !== null && $text !== '') {
+                    $items .= '<dt class="na-subtle">' . $this->e($this->trans((string) $options['label'])) . '</dt><dd>' . $this->e(is_scalar($text) ? (string) $text : get_debug_type($text)) . '</dd>';
+                }
+            }
+
+            if ($items !== '') {
+                $html .= '<div><span class="na-badge na-badge-primary">' . $this->e($label) . '</span><dl>' . $items . '</dl></div>';
+            }
+        }
+
+        return $html !== '' ? '<div class="na-stack">' . $html . '</div>' : '<span class="na-subtle">—</span>';
     }
 
     protected function enum(UnitEnum $value): string

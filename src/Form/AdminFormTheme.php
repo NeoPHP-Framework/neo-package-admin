@@ -84,6 +84,24 @@ class AdminFormTheme extends DefaultTheme
         return $html . '</div>';
     }
 
+    public function adminTranslationsWidget(FormView $view, array $vars, FormRenderer $renderer): string
+    {
+        $html = '<div' . $this->attributes($this->addClass(['id' => $vars['id']] + (array) ($vars['attr'] ?? []), 'na-grid na-grid-2')) . '>';
+
+        foreach ($view->children as $child) {
+            if ($child->isRendered()) {
+                continue;
+            }
+
+            $html .= '<section class="na-card">'
+                . '<div class="na-card-header"><h3 class="na-card-title">' . $this->e($child->vars['label'] ?? $child->vars['name'] ?? '') . '</h3></div>'
+                . '<div class="na-card-body">' . $renderer->widget($child) . '</div>'
+                . '</section>';
+        }
+
+        return $html . '</div>';
+    }
+
     public function buttonWidget(FormView $view, array $vars, FormRenderer $renderer): string
     {
         if (!isset($vars['attr']['class'])) {

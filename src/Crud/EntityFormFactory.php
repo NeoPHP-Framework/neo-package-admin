@@ -27,6 +27,7 @@ use NeoPHP\NeoAdmin\Definition\EntityDefinition;
 use NeoPHP\NeoAdmin\Definition\FieldDefinition;
 use NeoPHP\NeoAdmin\Exception\NeoAdminException;
 use NeoPHP\NeoAdmin\Form\AdminFormTheme;
+use NeoPHP\NeoAdmin\Form\TranslationsType;
 use NeoPHP\Package\Orm\Helper\Form\EntityType;
 use NeoPHP\Package\Orm\OrmManagerInterface;
 use ReflectionClass;
@@ -62,6 +63,7 @@ class EntityFormFactory
         protected FormManagerInterface $forms,
         protected OrmManagerInterface $orm,
         protected ValueRenderer $values,
+        protected ?TranslationMapper $translations = null,
     ) {
     }
 
@@ -101,6 +103,10 @@ class EntityFormFactory
         $mapping = (array) $field->getMapping();
         $options = ['label' => $field->getLabel()];
         $type = $field->getOption('type');
+
+        if ($type === TranslationMapper::TYPE) {
+            return $this->translations($entity, $field, $options);
+        }
 
         if ($field->getType() === 'json' && $type === null) {
             throw new NeoAdminException('The JSON field "{field}" of the entity "{entity}" cannot be edited without a "type" in the "form" section of config/packages/admin/entities/{entity}.yaml.', 0, null, ['field' => $field->getName(), 'entity' => $entity->getName()]);
@@ -153,5 +159,20 @@ class EntityFormFactory
         $type = (string) ($type ?? 'text');
 
         return [self::TYPES[$type] ?? $type, $options];
+    }
+
+    protected function translations(EntityDefinition $entity, FieldDefinition $field, array $options): array
+    {
+        $mapper = $this->translations ??= new TranslationMapper($this->orm, $this->values->getTranslator());
+
+        foreach (['help', 'disabled', 'attr'] as $name) {
+            if (array_key_exists($name, $field->getOptions())) {
+                $options[$name] = $field->getOption($name);
+            }
+        }
+
+        $options += ['mapper' => $mapper, 'translations' => $mapper->resolve($field, $entity->getName())];
+
+        return [TranslationsType::class, array_replace($options, (array) $field->getOption('options', []))];
     }
 }
