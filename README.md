@@ -169,7 +169,6 @@ form:
         slug: ~
         translations:
             type: translations
-            locales: { fr: Français, en: English }
             fields:
                 name: { label: Name, required: true }
                 description: { label: Description, type: textarea }
@@ -180,7 +179,7 @@ index:
 
 show:
     fields:
-        translations: { type: translations, locales: { fr: Français, en: English }, fields: [name, description] }
+        translations: { type: translations, fields: [name, description] }
 ```
 
 Two layouts of the translation entity are supported:
@@ -190,7 +189,7 @@ Two layouts of the translation entity are supported:
 
 | Option | Description |
 |---|---|
-| `locales` | The locales, as a list (`[fr, en]`) or a mapping of codes and labels (the locales of the Translation module by default) |
+| `locales` | The locales, as a list (`[fr, en]`) or a mapping of codes and labels. By default, the enabled locales of the Translation module (`packages.translation.locales` in `config/packages/translation.yaml`), named in their own language (Français, English, Deutsch) when the `intl` extension is loaded |
 | `fields` | The translated fields, as a list or a mapping with `label`, `type`, `required`, `help`, `attr`, `placeholder`, `choices` and `options` (`name` by default, or the text properties of a one-row-per-locale target) |
 | `locale_property` | The property of the locale (`locale`) |
 | `field_property` | The property of the field name (`field` when the target has it, `null` for a row per locale) |

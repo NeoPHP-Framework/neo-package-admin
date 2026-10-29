@@ -13,7 +13,8 @@
     "require": {
         "php": ">=8.2",
         "neophp/framework": "^2.1",
-        "twig/twig": "^3.0"
+        "twig/twig": "^3.0",
+        "ext-intl": "*"
     },
     "autoload": {
         "psr-4": {

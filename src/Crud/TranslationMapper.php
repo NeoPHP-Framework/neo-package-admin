@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace NeoPHP\NeoAdmin\Crud;
 
+use Locale;
 use NeoPHP\Component\Form\Accessor\PropertyAccessor;
 use NeoPHP\NeoAdmin\Definition\EntityDefinition;
 use NeoPHP\NeoAdmin\Definition\FieldDefinition;
@@ -14,8 +15,6 @@ use NeoPHP\Package\Orm\OrmManagerInterface;
 use NeoPHP\Package\Translation\TranslationManagerInterface;
 
 /**
- * Reads and writes the rows of a OneToMany association holding translations: one row per locale and field (locale, field, value), or one row per locale with a property per field.
- *
  * @internal
  */
 class TranslationMapper
@@ -33,9 +32,6 @@ class TranslationMapper
         return $field->getOption('type') === self::TYPE;
     }
 
-    /**
-     * Resolves the options of a "translations" field from the ORM mapping: target, inverse side, properties, locales and fields.
-     */
     public function resolve(FieldDefinition $field, string $entity): array
     {
         $mapping = (array) $field->getMapping();
@@ -81,8 +77,6 @@ class TranslationMapper
     }
 
     /**
-     * The values of the rows, by locale then by field.
-     *
      * @return array<string, array<string, mixed>>
      * @throws MappingException
      */
@@ -109,8 +103,6 @@ class TranslationMapper
     }
 
     /**
-     * Creates, updates and removes the rows of the owner from the submitted values: an empty value removes its row.
-     *
      * @param array<string, array<string, mixed>> $submitted
      * @throws MappingException
      */
@@ -220,10 +212,21 @@ class TranslationMapper
 
         foreach ((array) $locales as $key => $label) {
             $code = is_int($key) ? (string) $label : (string) $key;
-            $resolved[$code] = is_int($key) || $label === null ? $code : (string) $label;
+            $resolved[$code] = is_int($key) || $label === null ? self::localeName($code) : (string) $label;
         }
 
         return $resolved;
+    }
+
+    public static function localeName(string $locale): string
+    {
+        if (!class_exists(Locale::class)) {
+            return strtoupper($locale);
+        }
+
+        $name = Locale::getDisplayName($locale, $locale);
+
+        return $name !== '' && $name !== $locale ? mb_strtoupper(mb_substr($name, 0, 1)) . mb_substr($name, 1) : strtoupper($locale);
     }
 
     /**
