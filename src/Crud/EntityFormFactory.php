@@ -171,7 +171,15 @@ class EntityFormFactory
             }
         }
 
-        $options += ['mapper' => $mapper, 'translations' => $mapper->resolve($field, $entity->getName())];
+        $translator = $this->values->getTranslator();
+        $options += [
+            'mapper' => $mapper,
+            'translations' => $mapper->resolve($field, $entity->getName()),
+            'labels' => [
+                'missing' => $translator->translate('Missing', [], 'admin'),
+                'incomplete' => $translator->translate('Incomplete', [], 'admin'),
+            ],
+        ];
 
         return [TranslationsType::class, array_replace($options, (array) $field->getOption('options', []))];
     }

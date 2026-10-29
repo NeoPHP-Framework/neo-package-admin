@@ -7,6 +7,7 @@ namespace NeoPHP\NeoAdmin\Form;
 use NeoPHP\Component\Form\Model\FormView;
 use NeoPHP\Component\Form\Renderer\FormRenderer;
 use NeoPHP\Component\Form\Theme\DefaultTheme;
+use NeoPHP\NeoAdmin\Icon\Icons;
 
 class AdminFormTheme extends DefaultTheme
 {
@@ -86,17 +87,36 @@ class AdminFormTheme extends DefaultTheme
 
     public function adminTranslationsWidget(FormView $view, array $vars, FormRenderer $renderer): string
     {
-        $html = '<div' . $this->attributes($this->addClass(['id' => $vars['id']] + (array) ($vars['attr'] ?? []), 'na-grid na-grid-2')) . '>';
+        $labels = (array) ($vars['translation_labels'] ?? []);
+        $html = '<div' . $this->attributes($this->addClass(['id' => $vars['id']] + (array) ($vars['attr'] ?? []), 'na-translations')) . '>';
 
         foreach ($view->children as $child) {
             if ($child->isRendered()) {
                 continue;
             }
 
-            $html .= '<section class="na-card">'
-                . '<div class="na-card-header"><h3 class="na-card-title">' . $this->e($child->vars['label'] ?? $child->vars['name'] ?? '') . '</h3></div>'
-                . '<div class="na-card-body">' . $renderer->widget($child) . '</div>'
-                . '</section>';
+            $filled = 0;
+            $valid = true;
+
+            foreach ($child->children as $field) {
+                $filled += trim(is_scalar($field->vars['value'] ?? null) ? (string) $field->vars['value'] : '') !== '' ? 1 : 0;
+                $valid = $valid && ($field->vars['valid'] ?? true);
+            }
+
+            $badge = match (true) {
+                $filled === 0 => '<span class="na-badge na-badge-danger"><span class="na-dot na-dot-danger"></span>' . $this->e($labels['missing'] ?? 'Missing') . '</span>',
+                $filled < count($child->children) => '<span class="na-badge na-badge-warning"><span class="na-dot na-dot-warning"></span>' . $this->e($labels['incomplete'] ?? 'Incomplete') . '</span>',
+                default => '',
+            };
+
+            $html .= '<details class="na-translation"' . ($valid ? '' : ' open') . '>'
+                . '<summary class="na-translation-summary">'
+                . '<span class="na-translation-locale">' . $this->e($child->vars['label'] ?? $child->vars['name']) . ' <span class="na-translation-code">(' . $this->e($child->vars['name']) . ')</span></span>'
+                . $badge
+                . Icons::svg('chevron-down', 'na-icon-sm na-translation-chevron')
+                . '</summary>'
+                . '<div class="na-translation-body">' . $renderer->widget($child) . '</div>'
+                . '</details>';
         }
 
         return $html . '</div>';

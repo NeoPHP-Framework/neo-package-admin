@@ -7,6 +7,7 @@ namespace NeoPHP\NeoAdmin\Form;
 use NeoPHP\Component\Form\Contract\AbstractType;
 use NeoPHP\Component\Form\Contract\FormInterface;
 use NeoPHP\Component\Form\Model\FormBuilder;
+use NeoPHP\Component\Form\Model\FormView;
 use NeoPHP\NeoAdmin\Crud\TranslationMapper;
 
 /**
@@ -24,8 +25,14 @@ class TranslationsType extends AbstractType
         return [
             'mapper' => null,
             'translations' => [],
+            'labels' => [],
             'required' => false,
         ];
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options): void
+    {
+        $view->vars['translation_labels'] = (array) $options['labels'];
     }
 
     public function buildForm(FormBuilder $builder, array $options): void

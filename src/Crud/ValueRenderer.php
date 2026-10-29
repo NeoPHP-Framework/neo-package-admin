@@ -167,6 +167,9 @@ class ValueRenderer
         return $html . '</ul>';
     }
 
+    /**
+     * The value of the current locale in the list (the first field, or the "field" option), every locale and field on the other pages.
+     */
     protected function translations(iterable $rows, FieldDefinition $field, string $page): string
     {
         $this->translations ??= new TranslationMapper($this->orm, $this->translator);
@@ -187,25 +190,34 @@ class ValueRenderer
             return $this->e($this->truncate(is_scalar($text) ? (string) $text : get_debug_type($text), $truncate !== null ? (int) $truncate : null));
         }
 
-        $html = '';
+        $html = '<ul class="na-translation-list">';
+        $single = count($config['fields']) === 1;
 
         foreach ($config['locales'] as $locale => $label) {
-            $items = '';
+            $texts = [];
 
             foreach ($config['fields'] as $name => $options) {
                 $text = $values[$locale][$name] ?? null;
+                $texts[$name] = $text === null || $text === '' ? null : (is_scalar($text) ? (string) $text : get_debug_type($text));
+            }
 
-                if ($text !== null && $text !== '') {
-                    $items .= '<dt class="na-subtle">' . $this->e($this->trans((string) $options['label'])) . '</dt><dd>' . $this->e(is_scalar($text) ? (string) $text : get_debug_type($text)) . '</dd>';
+            $filled = array_filter($texts, static fn (?string $text): bool => $text !== null);
+            $html .= '<li class="na-translation-row"><span class="na-translation-locale">' . $this->e($label) . ' <span class="na-translation-code">(' . $this->e((string) $locale) . ')</span></span><span class="na-translation-value">';
+
+            if ($filled === []) {
+                $html .= '<span class="na-badge na-badge-danger"><span class="na-dot na-dot-danger"></span>' . $this->e($this->trans('Missing')) . '</span>';
+            } elseif ($single) {
+                $html .= $this->e((string) reset($filled));
+            } else {
+                foreach ($config['fields'] as $name => $options) {
+                    $html .= '<span><span class="na-subtle">' . $this->e($this->trans((string) $options['label'])) . '</span> ' . ($texts[$name] !== null ? $this->e($texts[$name]) : '<span class="na-subtle">—</span>') . '</span>';
                 }
             }
 
-            if ($items !== '') {
-                $html .= '<div><span class="na-badge na-badge-primary">' . $this->e($label) . '</span><dl>' . $items . '</dl></div>';
-            }
+            $html .= '</span></li>';
         }
 
-        return $html !== '' ? '<div class="na-stack">' . $html . '</div>' : '<span class="na-subtle">—</span>';
+        return $html . '</ul>';
     }
 
     protected function enum(UnitEnum $value): string

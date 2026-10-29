@@ -1358,6 +1358,103 @@
         text-align: right;
     }
 
+    .na-translations {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+    }
+
+    .na-translation {
+        border: 1px solid var(--na-border);
+        border-radius: var(--na-radius);
+        background: var(--na-surface);
+    }
+
+    .na-translation-summary {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .625rem .875rem;
+        border-radius: var(--na-radius);
+        list-style: none;
+        font-weight: 500;
+        color: var(--na-text);
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .na-translation-summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .na-translation-summary:hover {
+        background: var(--na-surface-hover);
+    }
+
+    .na-translation[open] > .na-translation-summary {
+        border-bottom: 1px solid var(--na-border-soft);
+        border-radius: var(--na-radius) var(--na-radius) 0 0;
+    }
+
+    .na-translation-code {
+        font-weight: 400;
+        color: var(--na-text-subtle);
+    }
+
+    .na-translation-chevron {
+        margin-left: auto;
+        color: var(--na-text-subtle);
+        transition: transform .15s ease;
+    }
+
+    .na-translation[open] > .na-translation-summary .na-translation-chevron {
+        transform: rotate(180deg);
+    }
+
+    .na-translation-body {
+        padding: 1rem .875rem 0;
+    }
+
+    .na-badge .na-dot {
+        width: .375rem;
+        height: .375rem;
+    }
+
+    .na-dot-danger {
+        background: var(--na-danger);
+    }
+
+    .na-dot-warning {
+        background: var(--na-warning-fg);
+    }
+
+    .na-translation-list {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .na-translation-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: .25rem 1rem;
+    }
+
+    .na-translation-row .na-translation-locale {
+        min-width: 9rem;
+        font-weight: 500;
+    }
+
+    .na-translation-value {
+        display: flex;
+        flex-direction: column;
+        gap: .125rem;
+    }
+
     @media (min-width: 1024px) {
         .na-mobile-only {
             display: none;

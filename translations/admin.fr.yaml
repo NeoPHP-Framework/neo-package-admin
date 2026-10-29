@@ -36,3 +36,5 @@ The security token is invalid, please try again.: Le jeton de sécurité est inv
 '{count, plural, one {# item} other {# items}}': '{count, plural, one {# élément} other {# éléments}}'
 'and {count} more': 'et {count} de plus'
 View all: Voir tout
+Missing: Manquant
+Incomplete: Incomplet
