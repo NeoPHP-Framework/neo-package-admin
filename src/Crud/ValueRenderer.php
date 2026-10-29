@@ -78,6 +78,10 @@ class ValueRenderer
             return '<span class="na-badge na-badge-primary">' . $this->e($this->enum($value)) . '</span>';
         }
 
+        if (is_array($field->getOption('choices')) && (is_scalar($value) || (is_array($value) && array_is_list($value)))) {
+            return $this->choices((array) $value, (array) $field->getOption('choices'));
+        }
+
         if (is_array($value) || $field->getType() === 'json') {
             return '<code class="na-code">' . $this->e($this->truncate((string) json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $page === 'index' ? 60 : null)) . '</code>';
         }
@@ -218,6 +222,27 @@ class ValueRenderer
         }
 
         return $html . '</ul>';
+    }
+
+    /**
+     * The values of a field with "choices" (label => value, as in the forms), as badges showing their label.
+     *
+     * @param array<mixed> $values
+     * @param array<string|int, mixed> $choices
+     */
+    protected function choices(array $values, array $choices): string
+    {
+        $labels = [];
+
+        foreach ($choices as $label => $choice) {
+            if (is_scalar($choice)) {
+                $labels[(string) $choice] = (string) $label;
+            }
+        }
+
+        $badges = array_map(fn (mixed $value): string => '<span class="na-badge na-badge-primary">' . $this->e($labels[is_scalar($value) ? (string) $value : ''] ?? (is_scalar($value) ? (string) $value : get_debug_type($value))) . '</span>', $values);
+
+        return $badges === [] ? '<span class="na-subtle">—</span>' : '<span class="na-tags">' . implode('', $badges) . '</span>';
     }
 
     protected function enum(UnitEnum $value): string

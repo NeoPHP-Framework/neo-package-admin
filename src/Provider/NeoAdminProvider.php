@@ -21,6 +21,8 @@ use NeoPHP\NeoAdmin\NeoAdminManagerInterface;
 use NeoPHP\Package\Orm\OrmManagerInterface;
 use NeoPHP\Package\Security\SecurityManagerInterface;
 use NeoPHP\Package\Translation\TranslationManagerInterface;
+use NeoPHP\NeoAdmin\Contract\LocaleProviderInterface;
+use NeoPHP\NeoAdmin\Exception\NeoAdminException;
 
 /**
  * @internal
@@ -56,10 +58,19 @@ class NeoAdminProvider extends AbstractProvider
             $container->get(FieldResolver::class),
         ));
 
-        $container->singleton(TranslationMapper::class, static fn (ContainerManagerInterface $container): TranslationMapper => new TranslationMapper(
-            $container->get(OrmManagerInterface::class),
-            $container->get(TranslationManagerInterface::class),
-        ));
+        $container->singleton(TranslationMapper::class, static function (ContainerManagerInterface $container): TranslationMapper {
+            $provider = $container->get(NeoAdminManagerInterface::class)->getConfig()['locale_provider'] ?? null;
+
+            if ($provider !== null && (!class_exists((string) $provider) || !is_subclass_of((string) $provider, LocaleProviderInterface::class))) {
+                throw new NeoAdminException('The locale provider "{class}" of config/packages/admin/admin.yaml must be a class implementing {interface}.', 0, null, ['class' => (string) $provider, 'interface' => LocaleProviderInterface::class]);
+            }
+
+            return new TranslationMapper(
+                $container->get(OrmManagerInterface::class),
+                $container->get(TranslationManagerInterface::class),
+                $provider !== null ? $container->get((string) $provider) : null,
+            );
+        });
 
         $container->singleton(ValueRenderer::class, static fn (ContainerManagerInterface $container): ValueRenderer => new ValueRenderer(
             $container->get(OrmManagerInterface::class),

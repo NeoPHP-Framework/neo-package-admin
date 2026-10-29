@@ -155,7 +155,7 @@ form:
 | `index.sort` | The default order |
 | `index.per_page` | The number of rows per page |
 
-Options of a field: `label`, `format` (dates), `truncate` (list), `sortable`, and for the forms `type` (`text`, `textarea`, `email`, `url`, `tel`, `password`, `integer`, `number`, `checkbox`, `choice`, `enum`, `entity`, `date`, `datetime`, `time`, `color`, `hidden` or a form type class), `help`, `required`, `disabled`, `attr`, `placeholder`, `choices`, `multiple`, `expanded` and `options` (`color`, `hidden`, `translations` or a form type class).
+Options of a field: `label`, `format` (dates), `truncate` (list), `sortable`, `choices` (also in the list and the show page: the values, alone or in a JSON list, are shown as badges with their label), and for the forms `type` (`text`, `textarea`, `email`, `url`, `tel`, `password`, `integer`, `number`, `checkbox`, `choice`, `enum`, `entity`, `date`, `datetime`, `time`, `color`, `hidden` or a form type class), `help`, `required`, `disabled`, `attr`, `placeholder`, `choices`, `multiple`, `expanded` and `options` (`color`, `hidden`, `translations` or a form type class).
 
 A field which is not mapped by the ORM can be displayed when the entity has a property or a getter with its name.
 
@@ -189,7 +189,7 @@ Two layouts of the translation entity are supported:
 
 | Option | Description |
 |---|---|
-| `locales` | The locales, as a list (`[fr, en]`) or a mapping of codes and labels. By default, the enabled locales of the Translation module (`packages.translation.locales` in `config/packages/translation.yaml`), named in their own language (Français, English, Deutsch) when the `intl` extension is loaded |
+| `locales` | The locales, as a list (`[fr, en]`) or a mapping of codes and labels. By default, the locales of the locale_provider of admin.yaml, else the enabled locales of the Translation module (`packages.translation.locales` in `config/packages/translation.yaml`), named in their own language (Français, English, Deutsch) when the `intl` extension is loaded |
 | `fields` | The translated fields, as a list or a mapping with `label`, `type`, `required`, `help`, `attr`, `placeholder`, `choices` and `options` (`name` by default, or the text properties of a one-row-per-locale target) |
 | `locale_property` | The property of the locale (`locale`) |
 | `field_property` | The property of the field name (`field` when the target has it, `null` for a row per locale) |
@@ -197,6 +197,38 @@ Two layouts of the translation entity are supported:
 | `field` | In the list, the field displayed in the current locale (the first field by default) |
 
 The association needs a `mappedBy`. The new rows are persisted by the administration, so no `cascade` is required; without `orphanRemoval: true`, the rows emptied in the form are removed explicitly.
+
+When the languages of the site are managed in the database, give their list to every "translations" field with a locale provider, a class of the project created by the container:
+
+```php
+namespace App\Admin\Translation;
+
+use App\Repository\LanguageRepository;
+use NeoPHP\NeoAdmin\Contract\LocaleProviderInterface;
+
+class LanguageLocaleProvider implements LocaleProviderInterface
+{
+    public function __construct(protected LanguageRepository $languages)
+    {
+    }
+
+    public function getLocales(): array
+    {
+        $locales = [];
+
+        foreach ($this->languages->findBy([], ['position' => 'ASC']) as $language) {
+            $locales[$language->getCode()] = $language->getName();
+        }
+
+        return $locales;
+    }
+}
+```
+
+```yaml
+# config/packages/admin/admin.yaml
+locale_provider: App\Admin\Translation\LanguageLocaleProvider
+```
 
 ## Routes
 

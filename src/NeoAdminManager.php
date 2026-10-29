@@ -29,6 +29,7 @@ final class NeoAdminManager implements NeoAdminManagerInterface
         'menu' => [['type' => 'dashboard']],
         'dashboard' => ['widgets' => []],
         'assets' => ['stylesheets' => [], 'javascripts' => []],
+        'locale_provider' => null,
     ];
 
     public const BADGE_VARIANTS = ['primary', 'success', 'warning', 'danger', 'info'];

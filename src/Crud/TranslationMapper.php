@@ -13,6 +13,7 @@ use NeoPHP\Package\Orm\Exception\MappingException;
 use NeoPHP\Package\Orm\Metadata\ClassMetadata;
 use NeoPHP\Package\Orm\OrmManagerInterface;
 use NeoPHP\Package\Translation\TranslationManagerInterface;
+use NeoPHP\NeoAdmin\Contract\LocaleProviderInterface;
 
 /**
  * @internal
@@ -23,8 +24,11 @@ class TranslationMapper
 
     public const DEFAULT_FIELDS = ['name'];
 
-    public function __construct(protected OrmManagerInterface $orm, protected TranslationManagerInterface $translator)
-    {
+    public function __construct(
+        protected OrmManagerInterface $orm,
+        protected TranslationManagerInterface $translator,
+        protected ?LocaleProviderInterface $locales = null
+    ) {
     }
 
     public function supports(FieldDefinition $field): bool
