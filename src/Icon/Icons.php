@@ -6,8 +6,6 @@ namespace NeoPHP\NeoAdmin\Icon;
 
 /**
  * Lucide icons (https://lucide.dev), lucide-static v1.63.0, ISC license.
- *
- * @internal
  */
 final class Icons
 {
